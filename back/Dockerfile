@@ -1,6 +1,6 @@
 FROM golang:1.23.5-alpine
 
-WORKDIR /app
+WORKDIR /back
 
 RUN apk add --no-cache git
 
@@ -11,4 +11,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["./main"]
+CMD ["go", "run", "main.go"]

@@ -2,10 +2,13 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func enableCORS(w http.ResponseWriter) {
@@ -23,10 +26,10 @@ func getMaria(w http.ResponseWriter, r *http.Request) {
 	enableCORS(w)
 	var err error
 	var db *sql.DB
-	io.WriteString(w, "Hello World!\n")
-	dsn := "root:@tcp(localhost:3306)/users"
+	//io.WriteString(w, "Hello Maria!\n")
+	dsn := "admin:admin@tcp(db:3306)/users"
 
-	db, err = sql.Open("maridb", dsn)
+	db, err = sql.Open("mysql", dsn)
 
 	// Example: Fetch data from a table
 	rows, err := db.Query("SELECT id, name FROM users")
@@ -35,6 +38,7 @@ func getMaria(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
+	var users []map[string]interface{}
 	for rows.Next() {
 		var id int
 		var name string
@@ -42,11 +46,20 @@ func getMaria(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		fmt.Printf("ID: %d, Name: %s\n", id, name)
+		user := map[string]interface{}{
+			"id":   id,
+			"name": name,
+		}
+		users = append(users, user)
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
 }
 
 func main() {
 	http.HandleFunc("/", getRoot)
+	http.HandleFunc("/data", getMaria)
 
 	http.ListenAndServe(":8000", nil)
 
