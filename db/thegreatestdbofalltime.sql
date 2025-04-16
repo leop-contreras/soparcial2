@@ -6,4 +6,4 @@ CREATE TABLE users (
 
 INSERT INTO users (id, name, email) VALUES
 (1234, 'Leo', 'cont@example.com'),
-(5678, 'Raul', 'bec@example.com');
+(1007, 'Raul', 'bec@example.com');

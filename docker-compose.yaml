@@ -17,7 +17,7 @@ services:
     container_name: back_so
     depends_on:
       - db
-    ports:
+    ports:  
       - "8000:8000"
     volumes:
       - ./back:/back
